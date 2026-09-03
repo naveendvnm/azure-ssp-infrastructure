@@ -19,3 +19,7 @@ Phase 0 reference infrastructure for the Azure Self-Service Portal.
 - Linux VM, Storage, Key Vault and Monitoring as supporting infrastructure
 
 Client-specific values will be introduced through configuration and variables as they are confirmed.
+
+## Phase 0 CI/CD
+
+Terraform infrastructure is validated through GitHub Actions on pull requests.
