@@ -1,9 +1,9 @@
-environment = "nonprod"
-location    = "eastus"
+environment  = "nonprod"
+location     = "eastus"
 project_name = "azure-ssp"
 
-# Set this only when the client provides an explicit resource group name.
-# resource_group_name = "client-ssp-nonprod-rg"
+# Leave empty to derive the resource group name.
+resource_group_name = ""
 
 tags = {
   ManagedBy   = "Terraform"
@@ -11,3 +11,10 @@ tags = {
   Environment = "nonprod"
   Owner       = "CloudPlatform"
 }
+
+# These must be globally unique / environment-specific.
+storage_account_name = "REPLACE_WITH_UNIQUE_STORAGE_NAME"
+key_vault_name       = "REPLACE_WITH_UNIQUE_KEYVAULT_NAME"
+
+# Example only. Do NOT commit a real private/public key.
+ssh_public_key = "REPLACE_WITH_SSH_PUBLIC_KEY"
