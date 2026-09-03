@@ -3,9 +3,15 @@ name: Terraform Apply
 on:
   workflow_dispatch:
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   terraform-apply:
+    name: Terraform Apply - NonProd
     runs-on: ubuntu-latest
+
     environment: nonprod
 
     steps:
@@ -15,6 +21,22 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          client-id: ac31f0c7-7ee2-439e-b9aa-c2afeacb5a0e
+          tenant-id: 1c1b107b-6bb7-42b2-a5d2-e0ef5f150924
+          subscription-id: ddd5236e-5e23-4145-bd6e-cc961d75b53f
+
+      - name: Verify Azure Login
+        run: |
+          az account show
+          az group show --name azure-ssp-nonprod-rg --output table
+
+      - name: Terraform Format Check
+        working-directory: terraform/environments/nonprod
+        run: terraform fmt -check -recursive
+
       - name: Terraform Init
         working-directory: terraform/environments/nonprod
         run: terraform init
@@ -23,6 +45,10 @@ jobs:
         working-directory: terraform/environments/nonprod
         run: terraform validate
 
+      - name: Terraform Plan
+        working-directory: terraform/environments/nonprod
+        run: terraform plan -out=tfplan
+
       - name: Terraform Apply
         working-directory: terraform/environments/nonprod
-        run: terraform apply -auto-approve
+        run: terraform apply -auto-approve tfplan
