@@ -1,4 +1,4 @@
-name: Terraform Apply - NonProd
+name: Terraform Apply
 
 on:
   workflow_dispatch:
@@ -7,11 +7,24 @@ permissions:
   id-token: write
   contents: read
 
+concurrency:
+  group: terraform-nonprod
+  cancel-in-progress: false
+
 jobs:
   terraform-apply:
     name: Terraform Apply - NonProd
     runs-on: ubuntu-latest
     environment: nonprod
+
+    env:
+      ARM_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
+      ARM_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
+      ARM_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
+      TF_VAR_storage_account_name: ${{ vars.TF_STORAGE_ACCOUNT_NAME }}
+      TF_VAR_key_vault_name: ${{ vars.TF_KEY_VAULT_NAME }}
+      TF_VAR_ssh_public_key: ${{ secrets.TF_SSH_PUBLIC_KEY }}
 
     steps:
       - name: Checkout
@@ -23,13 +36,14 @@ jobs:
       - name: Azure Login
         uses: azure/login@v2
         with:
-          client-id: ac31f0c7-7ee2-439e-b9aa-c2afeacb5a0e
-          tenant-id: 1c1b107b-6bb7-42b2-a5d2-e0ef5f150924
-          subscription-id: ddd5236e-5e23-4145-bd6e-cc961d75b53f
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
 
       - name: Verify Azure Login
         run: |
           az account show
+          az group list --output table
 
       - name: Terraform Format Check
         working-directory: terraform/environments/nonprod
@@ -37,7 +51,7 @@ jobs:
 
       - name: Terraform Init
         working-directory: terraform/environments/nonprod
-        run: terraform init
+        run: terraform init -input=false
 
       - name: Terraform Validate
         working-directory: terraform/environments/nonprod
@@ -45,12 +59,21 @@ jobs:
 
       - name: Terraform Plan
         working-directory: terraform/environments/nonprod
-        run: terraform plan -out=tfplan
+        run: terraform plan -input=false -out=tfplan
 
       - name: Terraform Apply
         working-directory: terraform/environments/nonprod
-        run: terraform apply -auto-approve tfplan
+        run: terraform apply -input=false -auto-approve tfplan
 
       - name: Terraform Output
         working-directory: terraform/environments/nonprod
         run: terraform output
+
+      - name: Verify Deployment
+        run: |
+          echo "Checking NonProd resource group..."
+          az group show \
+            --name azure-ssp-nonprod-rg \
+            --output table
+
+          echo "Deployment verification completed."
