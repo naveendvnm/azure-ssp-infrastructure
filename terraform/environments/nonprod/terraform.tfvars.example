@@ -1,0 +1,13 @@
+environment = "nonprod"
+location    = "eastus"
+project_name = "azure-ssp"
+
+# Set this only when the client provides an explicit resource group name.
+# resource_group_name = "client-ssp-nonprod-rg"
+
+tags = {
+  ManagedBy   = "Terraform"
+  Project     = "Azure-SSP"
+  Environment = "nonprod"
+  Owner       = "CloudPlatform"
+}

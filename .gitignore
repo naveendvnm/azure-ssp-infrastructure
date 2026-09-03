@@ -1,0 +1,49 @@
+# Terraform
+**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraformrc
+terraform.rc
+
+# Terraform variable files
+*.tfvars
+*.tfvars.json
+
+# Keep example variable files
+!*.tfvars.example
+
+# Secrets / credentials
+*.pem
+*.key
+*.pfx
+*.p12
+*.crt
+*.cer
+.env
+.env.*
+
+# Azure CLI / local credentials
+.azure/
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp

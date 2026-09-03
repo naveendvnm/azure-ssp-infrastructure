@@ -1,0 +1,28 @@
+name: Terraform Apply
+
+on:
+  workflow_dispatch:
+
+jobs:
+  terraform-apply:
+    runs-on: ubuntu-latest
+    environment: nonprod
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init
+        working-directory: terraform/environments/nonprod
+        run: terraform init
+
+      - name: Terraform Validate
+        working-directory: terraform/environments/nonprod
+        run: terraform validate
+
+      - name: Terraform Apply
+        working-directory: terraform/environments/nonprod
+        run: terraform apply -auto-approve
