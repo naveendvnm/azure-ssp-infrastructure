@@ -1,15 +1,10 @@
-# Phase 0 placeholder.
-# Remote Azure Storage backend configuration will be enabled once the
-# client's state-storage subscription, resource group, storage account,
-# container and access model are confirmed.
-#
-# Example production pattern:
-#
-# terraform {
-#   backend "azurerm" {
-#     resource_group_name  = "..."
-#     storage_account_name = "..."
-#     container_name       = "tfstate"
-#     key                  = "azure-ssp/nonprod.tfstate"
-#   }
-# }
+terraform {
+  backend "azurerm" {
+    resource_group_name  = "azure-ssp-tfstate-rg"
+    storage_account_name = "azssptfstate20260903"
+    container_name       = "tfstate"
+    key                  = "azure-ssp/nonprod.tfstate"
+
+    use_azuread_auth = true
+  }
+}
