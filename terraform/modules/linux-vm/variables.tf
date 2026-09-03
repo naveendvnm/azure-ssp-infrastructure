@@ -4,7 +4,7 @@ variable "resource_group_name" {
 }
 
 variable "location" {
-  description = "Azure region for the Linux VM."
+  description = "Azure region where the Linux VM will be created."
   type        = string
 }
 
